@@ -63,6 +63,36 @@ struct SofaStyle: Identifiable, Equatable, Hashable {
     }
 
     var pileSpread: CGFloat { chair.width * spread }
+
+    /// Where the count badge sits: on the chair's own top-right corner (the point of its outline furthest
+    /// up and to the right), nudged a little inward. Same rule for every chair, found from the picture.
+    var badgePoint: CGPoint {
+        let a = Self.badgeAnchors[id] ?? CGPoint(x: 0.9, y: 0.1)
+        return CGPoint(x: chair.minX + chair.width * a.x - 4, y: chair.minY + chair.height * a.y + 4)
+    }
+
+    private static let badgeAnchors: [String: CGPoint] = {
+        var out: [String: CGPoint] = [:]
+        for s in all {
+            guard let cg = s.image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { continue }
+            // look at a small copy: enough to find a corner
+            let w = 120, h = max(1, Int(CGFloat(w) * CGFloat(cg.height) / CGFloat(cg.width)))
+            var px = [UInt8](repeating: 0, count: w * h * 4)
+            guard let ctx = CGContext(data: &px, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4,
+                                      space: CGColorSpaceCreateDeviceRGB(),
+                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { continue }
+            ctx.draw(cg, in: CGRect(x: 0, y: 0, width: w, height: h))
+            var best = (score: -Int.max, x: 0, y: 0)
+            for y in 0..<h {   // the buffer's first row is the picture's top
+                for x in 0..<w where px[(y * w + x) * 4 + 3] > 128 {
+                    let score = x - y   // further right and further up wins
+                    if score > best.score { best = (score, x, y) }
+                }
+            }
+            out[s.id] = CGPoint(x: CGFloat(best.x) / CGFloat(w), y: CGFloat(best.y) / CGFloat(h))
+        }
+        return out
+    }()
 }
 
 /// Same three sizes as Rugonmac's rugs, with the same steps (its rugs have 22, 30 and 40 rows),

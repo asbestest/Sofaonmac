@@ -10,10 +10,17 @@ struct SofaView: View {
 
     var body: some View {
         let s = model.size.scale
-        content
-            .scaleEffect(s, anchor: .topLeading)
-            .frame(width: model.style.canvas.width * s, height: model.style.canvas.height * s, alignment: .topLeading)
-            .animation(.spring(response: 0.35, dampingFraction: 0.75), value: model.size)
+        ZStack(alignment: .topLeading) {
+            content
+                .scaleEffect(s, anchor: .topLeading)
+            // drawn outside the scaling, so it's always crisp and always the same size
+            if showsBadge && !model.items.isEmpty {
+                let p = model.style.badgePoint
+                badge.position(x: p.x * s, y: p.y * s)
+            }
+        }
+        .frame(width: model.style.canvas.width * s, height: model.style.canvas.height * s, alignment: .topLeading)
+        .animation(.spring(response: 0.35, dampingFraction: 0.75), value: model.size)
     }
 
     private var content: some View {
@@ -28,7 +35,6 @@ struct SofaView: View {
                 .position(x: chair.midX, y: chair.midY)
                 .shadow(color: model.dropHover ? Color(red: 1, green: 0.88, blue: 0.5).opacity(0.95) : .clear, radius: 16)
             pile
-            if showsBadge && !model.items.isEmpty { badge }
         }
         .frame(width: model.style.canvas.width, height: model.style.canvas.height, alignment: .topLeading)
         .scaleEffect(x: squash ? 1.04 : (model.dropHover ? 1.05 : 1),
@@ -62,16 +68,18 @@ struct SofaView: View {
         }
     }
 
+    /// Like a Dock badge: fixed size, white on red, a thin white ring so it reads on any upholstery.
     private var badge: some View {
         Text("\(model.items.count)")
-            .font(.system(size: 12, weight: .bold, design: .rounded))
+            .font(.system(size: 11, weight: .bold, design: .rounded))
+            .monospacedDigit()
             .foregroundStyle(.white)
-            .padding(.horizontal, 7).padding(.vertical, 2)
-            .background(Capsule().fill(Color(red: 0.86, green: 0.34, blue: 0.24)))
-            .shadow(color: .black.opacity(0.3), radius: 1, y: 1)
-            // sits on the top right of the pile, whatever the chair looks like
-            .position(x: min(model.style.seatPoint.x + model.style.pileSpread + 34, model.style.canvas.width - 14),
-                      y: model.style.seatPoint.y - CGFloat(min(model.items.count, 14)) * 4 - 24)
+            .padding(.horizontal, 5)
+            .frame(minWidth: 18, minHeight: 18)
+            .background(Capsule().fill(Color(red: 0.92, green: 0.26, blue: 0.21)))
+            .overlay(Capsule().strokeBorder(.white.opacity(0.9), lineWidth: 1.5))
+            .shadow(color: .black.opacity(0.3), radius: 1.5, y: 1)
+            .fixedSize()
     }
 }
 
