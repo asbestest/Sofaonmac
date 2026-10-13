@@ -1,0 +1,47 @@
+SOFAONMAC – ein Sessel für deinen Mac-Schreibtisch
+===================================================
+
+Wirf deinen Desktop-Kram einfach aufs Sofa – wie zu Hause.
+Passt perfekt zu Rugonmac: der Sessel steht dann auf dem Teppich.
+
+INSTALLIEREN
+1. Sofaonmac.app in den Programme-Ordner ziehen.
+2. Sofaonmac öffnen (Doppelklick).
+
+BEIM ERSTEN ÖFFNEN kommt eine Warnung
+("Apple konnte nicht überprüfen ...").
+Das ist normal, die App ist nur nicht im App Store:
+  a) Auf "Fertig" klicken (NICHT "In den Papierkorb legen").
+  b) Systemeinstellungen > Datenschutz & Sicherheit öffnen,
+     ganz nach unten scrollen, bei Sofaonmac auf "Dennoch öffnen" klicken
+     und mit deinem Mac-Passwort bestätigen.
+Danach startet die App ganz normal.
+
+BEDIENEN
+- Unten rechts auf dem Schreibtisch steht ein Sessel.
+- Dateien, Ordner, Bilder, Links oder Text auf den Sessel ziehen:
+  Sie landen auf dem Stapel und verschwinden vom Schreibtisch.
+  Sobald du etwas ziehst, kommt der Sessel nach vorne.
+- Auf den Sessel klicken: alles fächert sich auf.
+    Karte anklicken  = Datei öffnen
+    "Zurücklegen"    = Datei wandert an ihren alten Platz zurück
+    Karte rausziehen = irgendwo anders ablegen
+- Den Sessel selbst kannst du mit der Maus verschieben.
+- Oben in der Menüleiste ist ein kleines Sessel-Symbol:
+  Dort wählst du den Sessel und die Größe, stellst ihn auf oder räumst ihn weg
+  und legst alles zurück.
+- Einstellungen (Menü > Einstellungen …): Immer im Vordergrund, Sofa-Ordner,
+  Beim Login starten.
+
+NACH DEM NEUSTART
+Alles, was auf dem Sofa liegt, bleibt dort, auch wenn der Mac aus ist.
+Sobald Sofaonmac wieder läuft, steht der Sessel mit allem drauf wieder da.
+Liegt die App im Programme-Ordner, startet sie automatisch beim Login
+(abschaltbar in den Einstellungen).
+
+Nichts geht verloren: Alles, was auf dem Sofa liegt, ist im Sofa-Ordner
+(Einstellungen > Sofa-Ordner > Im Finder), auch wenn die App gerade nicht läuft.
+
+macOS fragt evtl. einmal, ob Sofaonmac auf den Schreibtisch-Ordner zugreifen darf -> erlauben.
+
+Voraussetzungen: Mac mit Apple-Chip (M1 oder neuer), macOS 14 Sonoma oder neuer.

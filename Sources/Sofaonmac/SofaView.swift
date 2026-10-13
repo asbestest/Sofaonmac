@@ -1,0 +1,105 @@
+import SwiftUI
+
+/// The sofa window's content: the chair plus the pile of files on its seat.
+/// Laid out on a fixed canvas (top-left origin); there's room above the chair for the pile to grow.
+struct SofaView: View {
+
+    @ObservedObject var model: SofaModel
+    var showsBadge = true
+    @State private var squash = false
+
+    var body: some View {
+        let s = model.size.scale
+        content
+            .scaleEffect(s, anchor: .topLeading)
+            .frame(width: model.style.canvas.width * s, height: model.style.canvas.height * s, alignment: .topLeading)
+            .animation(.spring(response: 0.35, dampingFraction: 0.75), value: model.size)
+    }
+
+    private var content: some View {
+        let chair = model.style.chair
+        return
+        ZStack(alignment: .topLeading) {
+            Ellipse().fill(.black.opacity(0.3))
+                .frame(width: chair.width * 0.92, height: 22).blur(radius: 7)
+                .position(x: chair.midX + 6, y: chair.maxY - 4)
+            Image(nsImage: model.style.image).resizable().interpolation(.high)
+                .frame(width: chair.width, height: chair.height)
+                .position(x: chair.midX, y: chair.midY)
+                .shadow(color: model.dropHover ? Color(red: 1, green: 0.88, blue: 0.5).opacity(0.95) : .clear, radius: 16)
+            pile
+            if showsBadge && !model.items.isEmpty { badge }
+        }
+        .frame(width: model.style.canvas.width, height: model.style.canvas.height, alignment: .topLeading)
+        .scaleEffect(x: squash ? 1.04 : (model.dropHover ? 1.05 : 1),
+                     y: squash ? 0.94 : (model.dropHover ? 1.05 : 1), anchor: .bottom)
+        .offset(y: model.dragActive && !model.dropHover ? -4 : 0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.55), value: model.dropHover)
+        .animation(.spring(response: 0.3, dampingFraction: 0.55), value: model.dragActive)
+        .onChange(of: model.landings) {
+            withAnimation(.spring(response: 0.12, dampingFraction: 0.9)) { squash = true }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.35)) { squash = false }
+            }
+        }
+    }
+
+    private var pile: some View {
+        let shown = Array(model.items.suffix(14))
+        return ForEach(Array(shown.enumerated()), id: \.element.id) { i, item in
+            let p = model.preview(of: item)
+            // flat sofas get smaller things, so the pile doesn't swallow them
+            let k = min(1, model.style.chair.height / 190)
+            let size = Thumb.fit(p, maxWidth: 70 * k, maxHeight: 58 * k)
+            Thumb(preview: p, width: size.width, height: size.height, corner: 3)
+                // lying on the cushion, not standing on it
+                .rotationEffect(.degrees(item.tilt))
+                .rotation3DEffect(.degrees(38), axis: (x: 1, y: 0, z: 0), perspective: 0.4)
+                .position(x: model.style.seatPoint.x + item.spread * model.style.pileSpread,
+                          y: model.style.seatPoint.y - CGFloat(i) * 4)
+                .transition(.asymmetric(insertion: .scale(scale: 1.5).combined(with: .opacity),
+                                        removal: .scale(scale: 0.6).combined(with: .opacity)))
+        }
+    }
+
+    private var badge: some View {
+        Text("\(model.items.count)")
+            .font(.system(size: 12, weight: .bold, design: .rounded))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 7).padding(.vertical, 2)
+            .background(Capsule().fill(Color(red: 0.86, green: 0.34, blue: 0.24)))
+            .shadow(color: .black.opacity(0.3), radius: 1, y: 1)
+            // sits on the top right of the pile, whatever the chair looks like
+            .position(x: min(model.style.seatPoint.x + model.style.pileSpread + 34, model.style.canvas.width - 14),
+                      y: model.style.seatPoint.y - CGFloat(min(model.items.count, 14)) * 4 - 24)
+    }
+}
+
+/// A file's picture: thumbnails get a thin white border like a photo, icons stand on their own.
+struct Thumb: View {
+    let preview: Preview
+    let width: CGFloat
+    let height: CGFloat
+    var corner: CGFloat = 8
+
+    static func fit(_ p: Preview, maxWidth: CGFloat, maxHeight: CGFloat) -> CGSize {
+        if !p.isThumbnail { let s = min(maxWidth, maxHeight) * 1.05; return CGSize(width: s, height: s) }
+        let w = min(maxWidth, maxHeight * p.aspect)
+        return CGSize(width: w, height: w / p.aspect)
+    }
+
+    var body: some View {
+        if preview.isThumbnail {
+            Image(nsImage: preview.image).resizable().aspectRatio(contentMode: .fill)
+                .frame(width: width, height: height)
+                .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: corner, style: .continuous)
+                    .strokeBorder(.white.opacity(0.95), lineWidth: max(1.5, width / 45)))
+                .shadow(color: .black.opacity(0.35), radius: max(2, width / 40), y: max(1, width / 80))
+        } else {
+            Image(nsImage: preview.image).resizable().aspectRatio(contentMode: .fit)
+                .frame(width: width, height: height)
+                .shadow(color: .black.opacity(0.3), radius: max(1.5, width / 50), y: max(1, width / 90))
+        }
+    }
+}
