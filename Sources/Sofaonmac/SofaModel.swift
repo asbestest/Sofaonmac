@@ -88,7 +88,8 @@ final class SofaModel: ObservableObject {
     let folder: URL
     private let manifest: URL
     private let fm = FileManager.default
-    private var syncTimer: Timer?
+    private var folderWatch: DispatchSourceFileSystemObject?
+    private var syncPending = false
 
     static var defaultFolder: URL {
         fm.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
@@ -106,8 +107,29 @@ final class SofaModel: ObservableObject {
         }
         sync()
         items.forEach(loadPreview)
-        // Files can also leave (dragged out, deleted in Finder) or arrive (put into the folder by hand).
-        syncTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in self?.sync() }
+        watchFolder()
+    }
+
+    /// Files can also leave (dragged out, deleted in Finder) or arrive (put into the folder by hand).
+    /// Instead of looking every few seconds, macOS tells us when the folder's contents change,
+    /// so the app sleeps completely while nothing happens.
+    private func watchFolder() {
+        let fd = Darwin.open(folder.path, O_EVTONLY)
+        guard fd >= 0 else { return }
+        let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: fd, eventMask: [.write, .rename, .delete],
+                                                               queue: .main)
+        source.setEventHandler { [weak self] in
+            guard let self, !syncPending else { return }
+            // a move often comes as a few events in a row; look once they've settled
+            syncPending = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                self.syncPending = false
+                self.sync()
+            }
+        }
+        source.setCancelHandler { Darwin.close(fd) }
+        source.resume()
+        folderWatch = source
     }
 
     func url(of item: SofaItem) -> URL { folder.appendingPathComponent(item.fileName) }

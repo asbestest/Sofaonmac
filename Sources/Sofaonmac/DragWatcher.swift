@@ -11,6 +11,10 @@ final class DragWatcher {
     private let pasteboard = NSPasteboard(name: .drag)
     private var countAtDown = 0
     private var active = false
+    /// Reading the drag pasteboard is a round trip to the pasteboard server: do it at most 10× a second,
+    /// and only during the first moments of a drag (that's when a file drag puts its data there).
+    private var downAt: TimeInterval = 0
+    private var lastCheck: TimeInterval = 0
 
     private static let interesting: Set<NSPasteboard.PasteboardType> = [.fileURL, .URL, .tiff, .png, .string]
 
@@ -19,12 +23,16 @@ final class DragWatcher {
         let add: (NSEvent.EventTypeMask, @escaping (NSEvent) -> Void) -> Void = { mask, handler in
             if let m = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: handler) { self.monitors.append(m) }
         }
-        add(.leftMouseDown) { [weak self] _ in
+        add(.leftMouseDown) { [weak self] e in
             guard let self else { return }
             countAtDown = pasteboard.changeCount
+            downAt = e.timestamp
+            lastCheck = 0
         }
-        add(.leftMouseDragged) { [weak self] _ in
-            guard let self, !active, pasteboard.changeCount != countAtDown,
+        add(.leftMouseDragged) { [weak self] e in
+            guard let self, !active, e.timestamp - downAt < 1.5, e.timestamp - lastCheck > 0.1 else { return }
+            lastCheck = e.timestamp
+            guard pasteboard.changeCount != countAtDown,
                   let types = pasteboard.types, !Self.interesting.isDisjoint(with: types) else { return }
             active = true
             onBegan?()

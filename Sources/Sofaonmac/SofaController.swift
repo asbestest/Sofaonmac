@@ -112,7 +112,7 @@ final class SofaController {
                            onPutBackAll: { [weak self] in self?.putBackAll() },
                            onDragOut: { [weak self] in self?.dragOut() },
                            // moved out by Finder: off the pile right away, not on the next check
-                           onDragEnded: { [weak self] in self?.model.sync() },
+                           onDragEnded: { [weak self] in self?.dragOutEnded() },
                            onClose: { [weak self] in self?.closeFan() })
         let panel = FanPanel(frame: f, content: view)
         panel.onCancel = { [weak self] in self?.closeFan() }
@@ -143,21 +143,22 @@ final class SofaController {
         model.putBackAll()
     }
 
-    /// A card is being dragged out: get the overlay out of the way so the drop reaches whatever is below,
-    /// and close it for good once the mouse is released.
+    /// A card is being dragged out: get the overlay out of the way so the drop reaches whatever is below.
     private func dragOut() {
         guard let panel = fan else { return }
         panel.ignoresMouseEvents = true
         panel.animator().alphaValue = 0
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] t in
-            guard NSEvent.pressedMouseButtons & 1 == 0 else { return }
-            t.invalidate()
-            if self?.fan === panel { self?.fan = nil }
-            panel.orderOut(nil)
-            panel.alphaValue = 1
-            panel.ignoresMouseEvents = false
-            self?.fanState.open = false
-        }
+    }
+
+    /// …and once it's dropped, close the fan for good. If Finder moved the file, it leaves the pile right away.
+    private func dragOutEnded() {
+        model.sync()
+        guard let panel = fan else { return }
+        fan = nil
+        panel.orderOut(nil)
+        panel.alphaValue = 1
+        panel.ignoresMouseEvents = false
+        fanState.open = false
     }
 }
 
