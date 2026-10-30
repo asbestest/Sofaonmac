@@ -4,26 +4,34 @@ SOFAONMAC – ein Sessel für deinen Mac-Schreibtisch
 Wirf deinen Desktop-Kram einfach aufs Sofa – wie zu Hause.
 Passt perfekt zu Rugonmac: der Sessel steht dann auf dem Teppich.
 
-INSTALLIEREN
+INSTALLIEREN – SO GEHT'S AM SCHNELLSTEN (1 Minute, nur einmal nötig)
+
 1. Sofaonmac.app in den Programme-Ordner ziehen.
-2. Sofaonmac öffnen (Doppelklick).
 
-BEIM ERSTEN ÖFFNEN blockiert macOS die App
-("Apple konnte nicht überprüfen ..." oder "... ist beschädigt").
-Das liegt nicht an der App: Sie ist nicht bei Apple registriert (kostet 99 €/Jahr),
-und alles, was per WhatsApp, Mail oder Browser kommt, steht unter "Quarantäne".
+2. Terminal öffnen:
+   cmd + Leertaste drücken, "Terminal" tippen, Enter.
 
-  Weg 1 (macOS 14 Sonoma):
-    Rechtsklick auf Sofaonmac.app > "Öffnen" > im Fenster nochmal "Öffnen".
-  Weg 2 (macOS 15 und neuer, oder wenn Weg 1 nicht geht):
-    Systemeinstellungen > Datenschutz & Sicherheit, ganz nach unten scrollen,
-    bei Sofaonmac auf "Dennoch öffnen" klicken und mit dem Mac-Passwort bestätigen.
-  Weg 3 (klappt immer, wenn die Meldung "beschädigt" lautet):
-    Programm "Terminal" öffnen, diese Zeile einfügen und Enter drücken:
-      xattr -dr com.apple.quarantine /Applications/Sofaonmac.app
-    Danach Sofaonmac ganz normal per Doppelklick öffnen.
+3. Diese Zeile kopieren, ins Terminal einfügen (cmd + V) und Enter drücken:
 
-Das muss man nur ein einziges Mal machen.
+   xattr -dr com.apple.quarantine /Applications/Sofaonmac.app
+
+   Es kommt keine Rückmeldung – das ist richtig so. Terminal kann zu.
+
+4. Sofaonmac per Doppelklick öffnen. Fertig.
+
+WARUM DAS NÖTIG IST
+Alles, was per WhatsApp, AirDrop, Mail oder Browser auf den Mac kommt, setzt
+macOS unter "Quarantäne". Bei Apps, die nicht bei Apple registriert sind
+(kostet den Entwickler 99 €/Jahr), blockiert macOS dann den Start mit
+"Apple konnte nicht überprüfen ..." oder "... ist beschädigt".
+Die Zeile aus Schritt 3 nimmt nur diese Markierung von Sofaonmac weg –
+sonst ändert sie nichts am Mac.
+
+Ohne Terminal geht's auch (dauert etwas länger):
+Sofaonmac einmal per Doppelklick öffnen, die Warnung mit "Fertig" schließen.
+Dann Systemeinstellungen > Datenschutz & Sicherheit, ganz nach unten scrollen,
+bei Sofaonmac auf "Dennoch öffnen" klicken und mit dem Mac-Passwort bestätigen.
+(Bei der Meldung "ist beschädigt" klappt nur der Weg übers Terminal.)
 
 BEDIENEN
 - Unten rechts auf dem Schreibtisch steht ein Sessel.
