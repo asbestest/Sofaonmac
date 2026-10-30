@@ -41,9 +41,9 @@ struct SofaStyle: Identifiable, Equatable, Hashable {
     // MARK: Geometry in the sofa window's canvas (top-left origin)
 
     /// All pieces share one scale, matched to Rugonmac's rugs: a rug at medium size is ~547pt wide,
-    /// which stands for a big 4 m living-room rug. So an armchair (~95 cm) covers about a quarter of the
-    /// rug's width and a two-seater (~2.2 m) a bit over half, at every size.
-    static let pointsPerCm: CGFloat = 547.0 / 400
+    /// which stands for a 3 m living-room rug. So an armchair (~95 cm) covers about a third of the
+    /// rug's width and a two-seater (~2.2 m) about three quarters, at every size.
+    static let pointsPerCm: CGFloat = 547.0 / 300
 
     /// Free space around the chair inside its window: the glow when something is dragged over it,
     /// the slight grow, and the floor shadow all need room to fade out before the window's edge cuts them.
