@@ -45,17 +45,21 @@ struct SofaStyle: Identifiable, Equatable, Hashable {
     /// rug's width and a two-seater (~2.2 m) a bit over half, at every size.
     static let pointsPerCm: CGFloat = 547.0 / 400
 
+    /// Free space around the chair inside its window: the glow when something is dragged over it,
+    /// the slight grow, and the floor shadow all need room to fade out before the window's edge cuts them.
+    static let margin: CGFloat = 48
+
     /// The chair stands at the bottom of the canvas, with room above it for the pile and around it for the shadow.
     var chair: CGRect {
         let px = image.size
         let aspect = px.height > 0 ? px.width / px.height : 1.2
         let w = width * Self.pointsPerCm
-        return CGRect(x: 20, y: 60, width: w, height: w / aspect)
+        return CGRect(x: Self.margin, y: 72, width: w, height: w / aspect)
     }
 
     /// The sofa window's size at medium size.
     var canvas: CGSize {
-        CGSize(width: chair.maxX + 20, height: chair.maxY + 18)
+        CGSize(width: chair.maxX + Self.margin, height: chair.maxY + Self.margin)
     }
 
     var seatPoint: CGPoint {

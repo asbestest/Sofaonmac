@@ -23,6 +23,19 @@ enum Snapshot {
         hover.dragActive = true
         hover.dropHover = true
         save(SofaView(model: hover).padding(20).background(bg), dir.appendingPathComponent("3-hover.png"))
+        // exactly as the window shows it: clipped to the window, on the desktop color — for each chair, plain and hovered
+        for style in SofaStyle.all {
+            for hovered in [false, true] {
+                let m = demoModel(3)
+                m.style = style
+                m.dragActive = hovered
+                m.dropHover = hovered
+                let c = m.style.canvas
+                save(SofaView(model: m).frame(width: c.width, height: c.height, alignment: .topLeading).clipped()
+                        .background(bg),
+                     dir.appendingPathComponent("8-window-\(style.id)\(hovered ? "-hover" : "").png"))
+            }
+        }
 
         for n in [4, 9] {
             let m = demoModel(n)

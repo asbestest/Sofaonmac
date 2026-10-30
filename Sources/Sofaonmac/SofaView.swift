@@ -26,9 +26,7 @@ struct SofaView: View {
     private var content: some View {
         let chair = model.style.chair
         return ZStack(alignment: .topLeading) {
-            Ellipse().fill(.black.opacity(0.3))
-                .frame(width: chair.width * 0.92, height: 22).blur(radius: 7)
-                .position(x: chair.midX + 6, y: chair.maxY - 4)
+            floorShadow(chair)
             Image(nsImage: model.style.image).resizable().interpolation(.high)
                 .frame(width: chair.width, height: chair.height)
                 .position(x: chair.midX, y: chair.midY)
@@ -47,6 +45,28 @@ struct SofaView: View {
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.35)) { squash = false }
             }
         }
+    }
+
+    /// The chair's own outline, squashed flat onto the floor and blurred: a contact shadow that fits every
+    /// shape (legs, arms, a lopsided bean bag), plus a wide, very soft one around it.
+    private func floorShadow(_ chair: CGRect) -> some View {
+        let silhouette = Image(nsImage: model.style.image).resizable().renderingMode(.template)
+        return ZStack {
+            silhouette
+                .foregroundStyle(.black.opacity(0.22))
+                .frame(width: chair.width * 1.04, height: chair.height)
+                .scaleEffect(x: 1, y: 0.16, anchor: .bottom)
+                .blur(radius: 14)
+            silhouette
+                .foregroundStyle(.black.opacity(0.4))
+                .frame(width: chair.width * 0.96, height: chair.height)
+                .scaleEffect(x: 1, y: 0.06, anchor: .bottom)
+                .blur(radius: 4)
+        }
+        .frame(width: chair.width, height: chair.height)
+        // photos are taken from slightly above: the floor contact sits a bit above the lowest pixel
+        .position(x: chair.midX + 4, y: chair.midY - chair.height * 0.03)
+        .allowsHitTesting(false)
     }
 
     private var pile: some View {
