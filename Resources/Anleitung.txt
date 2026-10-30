@@ -8,14 +8,22 @@ INSTALLIEREN
 1. Sofaonmac.app in den Programme-Ordner ziehen.
 2. Sofaonmac öffnen (Doppelklick).
 
-BEIM ERSTEN ÖFFNEN kommt eine Warnung
-("Apple konnte nicht überprüfen ...").
-Das ist normal, die App ist nur nicht im App Store:
-  a) Auf "Fertig" klicken (NICHT "In den Papierkorb legen").
-  b) Systemeinstellungen > Datenschutz & Sicherheit öffnen,
-     ganz nach unten scrollen, bei Sofaonmac auf "Dennoch öffnen" klicken
-     und mit deinem Mac-Passwort bestätigen.
-Danach startet die App ganz normal.
+BEIM ERSTEN ÖFFNEN blockiert macOS die App
+("Apple konnte nicht überprüfen ..." oder "... ist beschädigt").
+Das liegt nicht an der App: Sie ist nicht bei Apple registriert (kostet 99 €/Jahr),
+und alles, was per WhatsApp, Mail oder Browser kommt, steht unter "Quarantäne".
+
+  Weg 1 (macOS 14 Sonoma):
+    Rechtsklick auf Sofaonmac.app > "Öffnen" > im Fenster nochmal "Öffnen".
+  Weg 2 (macOS 15 und neuer, oder wenn Weg 1 nicht geht):
+    Systemeinstellungen > Datenschutz & Sicherheit, ganz nach unten scrollen,
+    bei Sofaonmac auf "Dennoch öffnen" klicken und mit dem Mac-Passwort bestätigen.
+  Weg 3 (klappt immer, wenn die Meldung "beschädigt" lautet):
+    Programm "Terminal" öffnen, diese Zeile einfügen und Enter drücken:
+      xattr -dr com.apple.quarantine /Applications/Sofaonmac.app
+    Danach Sofaonmac ganz normal per Doppelklick öffnen.
+
+Das muss man nur ein einziges Mal machen.
 
 BEDIENEN
 - Unten rechts auf dem Schreibtisch steht ein Sessel.

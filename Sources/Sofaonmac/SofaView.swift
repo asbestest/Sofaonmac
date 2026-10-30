@@ -25,8 +25,7 @@ struct SofaView: View {
 
     private var content: some View {
         let chair = model.style.chair
-        return
-        ZStack(alignment: .topLeading) {
+        return ZStack(alignment: .topLeading) {
             Ellipse().fill(.black.opacity(0.3))
                 .frame(width: chair.width * 0.92, height: 22).blur(radius: 7)
                 .position(x: chair.midX + 6, y: chair.maxY - 4)

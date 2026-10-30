@@ -107,18 +107,28 @@ final class SofaController {
         let chair = model.style.chair, s = model.size.scale
         let chairTop = CGPoint(x: sofa.frame.minX + chair.midX * s - f.minX, y: f.maxY - sofa.frame.maxY + chair.minY * s)
         let view = FanView(model: model, state: fanState, sofaPoint: chairTop,
-                           onOpen: { [weak self] item in self?.model.open(item); self?.closeFan() },
                            onPutBack: { [weak self] item in self?.putBack(item) },
                            onPutBackAll: { [weak self] in self?.putBackAll() },
-                           onDragOut: { [weak self] in self?.dragOut() },
-                           // moved out by Finder: off the pile right away, not on the next check
-                           onDragEnded: { [weak self] in self?.dragOutEnded() },
                            onClose: { [weak self] in self?.closeFan() })
-        let panel = FanPanel(frame: f, content: view)
+        let hits = FanHitView()
+        hits.state = fanState
+        hits.cards = { [weak self] in
+            guard let self else { return [] }
+            return FanLayout(count: model.items.count, sofa: chairTop, bounds: f.size)
+                .cards(model.items, preview: model.preview(of:))
+        }
+        hits.url = { [weak self] item in self?.model.url(of: item) }
+        hits.image = { [weak self] item in self?.model.preview(of: item).image }
+        hits.onOpen = { [weak self] item in self?.model.open(item); self?.closeFan() }
+        hits.onDragBegan = { [weak self] in self?.dragOut() }
+        // moved out by Finder: off the pile right away, not on the next check
+        hits.onDragEnded = { [weak self] in self?.dragOutEnded() }
+        let panel = FanPanel(frame: f, content: view, hits: hits)
         panel.onCancel = { [weak self] in self?.closeFan() }
         fan = panel
         fanState.open = false
-        NSApp.activate()
+        fanState.hovered = nil
+        NSApp.activateIgnoringOthers()
         panel.makeKeyAndOrderFront(nil)
         DispatchQueue.main.async { self.fanState.open = true }
     }
@@ -299,7 +309,7 @@ final class SofaHostView: NSHostingView<SofaView> {
 final class FanPanel: NSPanel {
     var onCancel: (() -> Void)?
 
-    init(frame: CGRect, content: FanView) {
+    init(frame: CGRect, content: FanView, hits: FanHitView) {
         super.init(contentRect: frame, styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
         isOpaque = false
         backgroundColor = .clear
@@ -307,7 +317,15 @@ final class FanPanel: NSPanel {
         level = .floating
         isReleasedWhenClosed = false
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
-        contentView = NSHostingView(rootView: content)
+        acceptsMouseMovedEvents = true
+        let container = NSView(frame: CGRect(origin: .zero, size: frame.size))
+        let host = NSHostingView(rootView: content)
+        for v in [host, hits] as [NSView] {
+            v.frame = container.bounds
+            v.autoresizingMask = [.width, .height]
+            container.addSubview(v)
+        }
+        contentView = container
         setFrame(frame, display: false)
     }
 

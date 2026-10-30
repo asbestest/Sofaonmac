@@ -36,7 +36,7 @@ enum Snapshot {
                 SofaView(model: m).position(x: sofaOrigin.x + canvas.width / 2, y: sofaOrigin.y + canvas.height / 2)
                 FanView(model: m, state: state,
                         sofaPoint: CGPoint(x: sofaOrigin.x + m.style.chair.midX, y: sofaOrigin.y + m.style.chair.minY),
-                        onOpen: { _ in }, onPutBack: { _ in }, onPutBackAll: {}, onDragOut: {}, onDragEnded: {}, onClose: {})
+                        onPutBack: { _ in }, onPutBackAll: {}, onClose: {})
             }.frame(width: size.width, height: size.height)
             save(fan, dir.appendingPathComponent("4-fan-\(n).png"), scale: 1)
         }

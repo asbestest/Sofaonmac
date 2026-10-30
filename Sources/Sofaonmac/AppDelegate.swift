@@ -106,7 +106,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc private func openSettings() { showSettings() }
     @objc private func quit() { NSApp.terminate(nil) }
     @objc private func about() {
-        NSApp.activate()
+        NSApp.activateIgnoringOthers()
         NSApp.orderFrontStandardAboutPanel(nil)
     }
 
@@ -127,11 +127,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             w.isOpaque = false
             w.backgroundColor = .clear
             w.isReleasedWhenClosed = false
+            // a settings panel: only "close" means something here
+            w.standardWindowButton(.miniaturizeButton)?.isHidden = true
+            w.standardWindowButton(.zoomButton)?.isHidden = true
             w.setContentSize(host.view.fittingSize)
             w.center()
             window = w
         }
-        NSApp.activate()
+        NSApp.activateIgnoringOthers()
         window?.makeKeyAndOrderFront(nil)
     }
 
@@ -185,5 +188,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         image.isTemplate = true
         image.accessibilityDescription = "Sofaonmac"
         return image
+    }
+}
+
+extension NSApplication {
+    /// Comes to the front for real. On macOS 14 the plain `activate()` is only a polite request that an
+    /// accessory app without a Dock icon often doesn't get, so its windows stay inactive (greyed out).
+    func activateIgnoringOthers() {
+        activate(ignoringOtherApps: true)
     }
 }
