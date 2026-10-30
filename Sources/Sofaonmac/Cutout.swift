@@ -49,8 +49,10 @@ enum Cutout {
             var alpha = [Float](repeating: 0, count: w * h)
             switch kind {
             case .alreadyCut:
-                // keep the picture's own cut, but drop its soft drop shadow
+                // keep the picture's own cut, but drop its soft drop shadow, and pull the edge in by two pixels:
+                // such pictures were usually cut on white, and that white still clings to the outline
                 for i in 0..<(w * h) { alpha[i] = smoothstep(0.6, 0.92, Float(src[i * 4 + 3]) / 255) }
+                alpha = boxBlur(minFilter(minFilter(alpha, w, h), w, h), w, h)
             case .studioWhite:
                 // white that is connected to the border is background; white highlights inside the furniture stay.
                 // Vision's mask (lenient) still removes floor shadows.

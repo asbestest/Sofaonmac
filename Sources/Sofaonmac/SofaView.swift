@@ -47,25 +47,27 @@ struct SofaView: View {
         }
     }
 
-    /// The chair's own outline, squashed flat onto the floor and blurred: a contact shadow that fits every
-    /// shape (legs, arms, a lopsided bean bag), plus a wide, very soft one around it.
+    /// A shadow that runs along the chair's actual bottom outline (feet, edges, slanted photos alike):
+    /// a dark, tight contact shadow right at the outline and a wide, soft one around it.
+    /// It's drawn behind the chair, so only the part below the outline shows.
     private func floorShadow(_ chair: CGRect) -> some View {
-        let silhouette = Image(nsImage: model.style.image).resizable().renderingMode(.template)
-        return ZStack {
-            silhouette
-                .foregroundStyle(.black.opacity(0.22))
-                .frame(width: chair.width * 1.04, height: chair.height)
-                .scaleEffect(x: 1, y: 0.16, anchor: .bottom)
-                .blur(radius: 14)
-            silhouette
-                .foregroundStyle(.black.opacity(0.4))
-                .frame(width: chair.width * 0.96, height: chair.height)
-                .scaleEffect(x: 1, y: 0.06, anchor: .bottom)
-                .blur(radius: 4)
+        let profile = model.style.bottomProfile.map {
+            CGPoint(x: chair.minX + chair.width * $0.x, y: chair.minY + chair.height * $0.y)
         }
-        .frame(width: chair.width, height: chair.height)
-        // photos are taken from slightly above: the floor contact sits a bit above the lowest pixel
-        .position(x: chair.midX + 4, y: chair.midY - chair.height * 0.03)
+        func band(depth: CGFloat, inset: CGFloat) -> Path {
+            Path { p in
+                guard let first = profile.first, let last = profile.last else { return }
+                p.move(to: CGPoint(x: first.x + inset, y: first.y - depth * 0.6))
+                for pt in profile { p.addLine(to: CGPoint(x: pt.x, y: pt.y - depth * 0.6)) }
+                p.addLine(to: CGPoint(x: last.x - inset, y: last.y + depth * 0.4))
+                for pt in profile.reversed() { p.addLine(to: CGPoint(x: pt.x, y: pt.y + depth * 0.4)) }
+                p.closeSubpath()
+            }
+        }
+        return ZStack {
+            band(depth: 22, inset: -10).fill(.black.opacity(0.16)).blur(radius: 12)
+            band(depth: 8, inset: 4).fill(.black.opacity(0.32)).blur(radius: 4)
+        }
         .allowsHitTesting(false)
     }
 
@@ -73,13 +75,13 @@ struct SofaView: View {
         let shown = Array(model.items.suffix(14))
         return ForEach(Array(shown.enumerated()), id: \.element.id) { i, item in
             let p = model.preview(of: item)
-            // flat sofas get smaller things, so the pile doesn't swallow them
+            // smaller chairs get smaller things, so the pile doesn't swallow them
             let k = min(1, model.style.chair.height / 190)
-            let size = Thumb.fit(p, maxWidth: 70 * k, maxHeight: 58 * k)
-            Thumb(preview: p, width: size.width, height: size.height, corner: 3)
-                // lying on the cushion, not standing on it
+            let size = Thumb.fit(p, maxWidth: 58 * k, maxHeight: 48 * k)
+            Thumb(preview: p, width: size.width, height: size.height, corner: 3, lying: true)
+                // lying flat on the cushion, seen from slightly above like the chair
                 .rotationEffect(.degrees(item.tilt))
-                .rotation3DEffect(.degrees(38), axis: (x: 1, y: 0, z: 0), perspective: 0.4)
+                .rotation3DEffect(.degrees(58), axis: (x: 1, y: 0, z: 0), anchor: .bottom, perspective: 0.35)
                 .position(x: model.style.seatPoint.x + item.spread * model.style.pileSpread,
                           y: model.style.seatPoint.y - CGFloat(i) * 4)
                 .transition(.asymmetric(insertion: .scale(scale: 1.5).combined(with: .opacity),
@@ -108,6 +110,8 @@ struct Thumb: View {
     let width: CGFloat
     let height: CGFloat
     var corner: CGFloat = 8
+    /// Lying on a cushion: a tight shadow right under it instead of one that makes it float.
+    var lying = false
 
     static func fit(_ p: Preview, maxWidth: CGFloat, maxHeight: CGFloat) -> CGSize {
         if !p.isThumbnail { let s = min(maxWidth, maxHeight) * 1.05; return CGSize(width: s, height: s) }
@@ -122,11 +126,11 @@ struct Thumb: View {
                 .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
                 .overlay(RoundedRectangle(cornerRadius: corner, style: .continuous)
                     .strokeBorder(.white.opacity(0.95), lineWidth: max(1.5, width / 45)))
-                .shadow(color: .black.opacity(0.35), radius: max(2, width / 40), y: max(1, width / 80))
+                .shadow(color: .black.opacity(lying ? 0.45 : 0.35), radius: lying ? 1.2 : max(2, width / 40), y: lying ? 0.8 : max(1, width / 80))
         } else {
             Image(nsImage: preview.image).resizable().aspectRatio(contentMode: .fit)
                 .frame(width: width, height: height)
-                .shadow(color: .black.opacity(0.3), radius: max(1.5, width / 50), y: max(1, width / 90))
+                .shadow(color: .black.opacity(lying ? 0.4 : 0.3), radius: lying ? 1 : max(1.5, width / 50), y: lying ? 0.6 : max(1, width / 90))
         }
     }
 }

@@ -17,7 +17,7 @@ struct SofaStyle: Identifiable, Equatable, Hashable {
         SofaStyle(id: "cord", title: "Cord", subtitle: "Grüner Cord-Sessel", seat: CGPoint(x: 0.35, y: 0.47), spread: 0.16, width: 95),
         SofaStyle(id: "togo", title: "Togo", subtitle: "Der Knautsch-Klassiker in braunem Leder", seat: CGPoint(x: 0.64, y: 0.55), spread: 0.14, width: 105),
         SofaStyle(id: "lc2", title: "LC2", subtitle: "Le Corbusiers Würfel in schwarzem Leder", seat: CGPoint(x: 0.30, y: 0.36), spread: 0.08, width: 90),
-        SofaStyle(id: "sand", title: "Sandsofa", subtitle: "Weiches Modulsofa in Beige", seat: CGPoint(x: 0.42, y: 0.50), spread: 0.22, width: 220),
+        SofaStyle(id: "sand", title: "Sandsofa", subtitle: "Weiches Modulsofa in Beige", seat: CGPoint(x: 0.38, y: 0.45), spread: 0.18, width: 220),
     ]
 
     static let standard = all[0]
@@ -73,6 +73,36 @@ struct SofaStyle: Identifiable, Equatable, Hashable {
     var badgePoint: CGPoint {
         let a = Self.badgeAnchors[id] ?? CGPoint(x: 0.9, y: 0.1)
         return CGPoint(x: chair.minX + chair.width * a.x - 4, y: chair.minY + chair.height * a.y + 4)
+    }
+
+    /// The chair's bottom outline, left to right, as fractions of the picture: for each column the lowest
+    /// visible pixel. The floor shadow follows it, so it sits under feet and edges even on slanted photos.
+    var bottomProfile: [CGPoint] { Self.bottomProfiles[id] ?? [] }
+
+    private static let bottomProfiles: [String: [CGPoint]] = {
+        var out: [String: [CGPoint]] = [:]
+        for s in all {
+            guard let (px, w, h) = smallCopy(s.image) else { continue }
+            var points: [CGPoint] = []
+            for x in 0..<w {
+                guard let y = (0..<h).last(where: { px[($0 * w + x) * 4 + 3] > 128 }) else { continue }
+                points.append(CGPoint(x: (CGFloat(x) + 0.5) / CGFloat(w), y: (CGFloat(y) + 1) / CGFloat(h)))
+            }
+            out[s.id] = points
+        }
+        return out
+    }()
+
+    /// The picture at 120px wide, RGBA, rows from the top.
+    private static func smallCopy(_ image: NSImage) -> (px: [UInt8], w: Int, h: Int)? {
+        guard let cg = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
+        let w = 120, h = max(1, Int(CGFloat(w) * CGFloat(cg.height) / CGFloat(cg.width)))
+        var px = [UInt8](repeating: 0, count: w * h * 4)
+        guard let ctx = CGContext(data: &px, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4,
+                                  space: CGColorSpaceCreateDeviceRGB(),
+                                  bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+        ctx.draw(cg, in: CGRect(x: 0, y: 0, width: w, height: h))
+        return (px, w, h)
     }
 
     private static let badgeAnchors: [String: CGPoint] = {
