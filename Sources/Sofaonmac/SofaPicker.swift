@@ -69,7 +69,7 @@ struct SofaPicker: View {
                     }
                 }
                 .padding(.horizontal, inset)
-                .padding(.vertical, 6)   // room for the selection shadow
+                .padding(.vertical, 12)   // room for the selection shadow to fade out
             }
             .mask(
                 HStack(spacing: 0) {
