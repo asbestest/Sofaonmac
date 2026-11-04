@@ -14,15 +14,15 @@ struct SofaStyle: Identifiable, Equatable, Hashable {
     let width: CGFloat
 
     static let all: [SofaStyle] = [
-        SofaStyle(id: "cord", title: "Cord", subtitle: "Grüner Cord-Sessel", seat: CGPoint(x: 0.35, y: 0.47), spread: 0.16, width: 95),
-        SofaStyle(id: "togo", title: "Togo", subtitle: "Der Knautsch-Klassiker in braunem Leder", seat: CGPoint(x: 0.64, y: 0.55), spread: 0.14, width: 105),
-        SofaStyle(id: "lc2", title: "LC2", subtitle: "Le Corbusiers Würfel in schwarzem Leder", seat: CGPoint(x: 0.30, y: 0.36), spread: 0.08, width: 90),
-        SofaStyle(id: "sand", title: "Sandsofa", subtitle: "Weiches Modulsofa in Beige", seat: CGPoint(x: 0.38, y: 0.45), spread: 0.18, width: 220),
-        SofaStyle(id: "freischwinger", title: "Freischwinger", subtitle: "Chromrohr mit Wiener Geflecht", seat: CGPoint(x: 0.43, y: 0.42), spread: 0.12, width: 60),
-        SofaStyle(id: "sprossen", title: "Sprossenstuhl", subtitle: "Heller Buchenstuhl mit Sprossenlehne", seat: CGPoint(x: 0.47, y: 0.40), spread: 0.13, width: 54),
-        SofaStyle(id: "gaming", title: "Gaming-Stuhl", subtitle: "Schwarz-weißer Bürostuhl auf Rollen", seat: CGPoint(x: 0.45, y: 0.55), spread: 0.14, width: 74),
-        SofaStyle(id: "bugholz", title: "Bugholzsessel", subtitle: "Loungesessel mit cremefarbenem Bouclé", seat: CGPoint(x: 0.40, y: 0.45), spread: 0.16, width: 91),
-        SofaStyle(id: "sitzsack", title: "Sitzsack", subtitle: "Dunkelblauer Cord zum Reinfläzen", seat: CGPoint(x: 0.50, y: 0.52), spread: 0.2, width: 125),
+        SofaStyle(id: "cord", title: L("Corduroy"), subtitle: L("Green corduroy armchair"), seat: CGPoint(x: 0.35, y: 0.47), spread: 0.16, width: 95),
+        SofaStyle(id: "togo", title: "Togo", subtitle: L("The squishy classic in brown leather"), seat: CGPoint(x: 0.64, y: 0.55), spread: 0.14, width: 105),
+        SofaStyle(id: "lc2", title: "LC2", subtitle: L("Le Corbusier's cube in black leather"), seat: CGPoint(x: 0.30, y: 0.36), spread: 0.08, width: 90),
+        SofaStyle(id: "sand", title: L("Sand sofa"), subtitle: L("Soft modular sofa in beige"), seat: CGPoint(x: 0.38, y: 0.45), spread: 0.18, width: 220),
+        SofaStyle(id: "freischwinger", title: L("Cantilever"), subtitle: L("Chrome tube with Viennese cane"), seat: CGPoint(x: 0.43, y: 0.42), spread: 0.12, width: 60),
+        SofaStyle(id: "sprossen", title: L("Spindle chair"), subtitle: L("Light beech chair with a spindle back"), seat: CGPoint(x: 0.47, y: 0.40), spread: 0.13, width: 54),
+        SofaStyle(id: "gaming", title: L("Gaming chair"), subtitle: L("Black and white office chair on wheels"), seat: CGPoint(x: 0.45, y: 0.55), spread: 0.14, width: 74),
+        SofaStyle(id: "bugholz", title: L("Bentwood"), subtitle: L("Lounge chair in cream bouclé"), seat: CGPoint(x: 0.40, y: 0.45), spread: 0.16, width: 91),
+        SofaStyle(id: "sitzsack", title: L("Bean bag"), subtitle: L("Dark blue corduroy to sink into"), seat: CGPoint(x: 0.50, y: 0.52), spread: 0.2, width: 125),
     ]
 
     static let standard = all[0]
@@ -148,9 +148,9 @@ enum SofaSize: Int, CaseIterable, Identifiable {
     }
     var longTitle: String {
         switch self {
-        case .small: "Klein"
-        case .medium: "Mittel"
-        case .large: "Groß"
+        case .small: L("Small")
+        case .medium: L("Medium")
+        case .large: L("Large")
         }
     }
     var scale: CGFloat {

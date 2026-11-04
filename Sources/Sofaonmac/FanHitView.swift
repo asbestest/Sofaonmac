@@ -3,7 +3,7 @@ import AppKit
 /// Lies over the fan and does all the mouse work for its cards: hover, click (open) and drag (the real file).
 ///
 /// It tests the mouse against the cards' actual, rotated outlines, topmost card first, and lets every other
-/// click through to SwiftUI below (the "Zurücklegen" buttons, "Alles zurücklegen", the background).
+/// click through to SwiftUI below (the "Put back" buttons, "Put everything back", the background).
 /// Dragging offers "move", so Finder moves the file out of the sofa instead of copying it, and puts it
 /// where the mouse lets go.
 final class FanHitView: NSView, NSDraggingSource {

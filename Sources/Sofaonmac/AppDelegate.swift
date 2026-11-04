@@ -49,11 +49,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.autoenablesItems = false
 
         // 1. the chair itself
-        showItem = item("Sessel aufstellen", #selector(toggleSofa), key: "s", modifiers: [.command, .option])
+        showItem = item(L("Set up chair"), #selector(toggleSofa), key: "s", modifiers: [.command, .option])
         menu.addItem(showItem)
-        openItem = item("Durchwühlen", #selector(openFan), key: "d", modifiers: [.command, .option])
+        openItem = item(L("Rummage"), #selector(openFan), key: "d", modifiers: [.command, .option])
         menu.addItem(openItem)
-        putBackItem = item("Alles zurücklegen", #selector(putBackAll), key: "")
+        putBackItem = item(L("Put everything back"), #selector(putBackAll), key: "")
         menu.addItem(putBackItem)
         menu.addItem(.separator())
 
@@ -63,7 +63,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         host.frame.size = host.fittingSize
         chairs.view = host
         menu.addItem(chairs)
-        let sizeParent = NSMenuItem(title: "Größe", action: nil, keyEquivalent: "")
+        let sizeParent = NSMenuItem(title: L("Size"), action: nil, keyEquivalent: "")
         let sizeMenu = NSMenu()
         for s in SofaSize.allCases {
             let i = item(s.longTitle, #selector(pickSize(_:)), key: "")
@@ -76,10 +76,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(.separator())
 
         // 3. app (options like always on top, login and the sofa folder live in the settings)
-        menu.addItem(item("Über Sofaonmac", #selector(about), key: ""))
-        menu.addItem(item("Einstellungen …", #selector(openSettings), key: ","))
+        menu.addItem(item(L("About Sofaonmac"), #selector(about), key: ""))
+        menu.addItem(item(L("Settings …"), #selector(openSettings), key: ","))
         menu.addItem(.separator())
-        menu.addItem(item("Sofaonmac beenden", #selector(quit), key: "q"))
+        menu.addItem(item(L("Quit Sofaonmac"), #selector(quit), key: "q"))
     }
 
     private func item(_ title: String, _ action: Selector, key: String,
@@ -92,8 +92,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func menuNeedsUpdate(_ menu: NSMenu) {
         let n = model.items.count
-        showItem.title = model.visible ? "Sessel wegräumen" : "Sessel aufstellen"
-        openItem.title = n == 0 ? "Durchwühlen" : "Durchwühlen (\(n))"
+        showItem.title = model.visible ? L("Put chair away") : L("Set up chair")
+        openItem.title = n == 0 ? L("Rummage") : L("Rummage") + " (\(n))"
         openItem.isEnabled = n > 0 && model.visible
         putBackItem.isEnabled = n > 0
         for i in sizeItems { i.state = i.tag == model.size.rawValue ? .on : .off }
@@ -143,8 +143,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let main = NSMenu()
         let appItem = NSMenuItem()
         let appMenu = NSMenu()
-        appMenu.addItem(withTitle: "Fenster schließen", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
-        appMenu.addItem(withTitle: "Sofaonmac beenden", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        appMenu.addItem(withTitle: L("Close Window"), action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
+        appMenu.addItem(withTitle: L("Quit Sofaonmac"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         appItem.submenu = appMenu
         main.addItem(appItem)
         return main

@@ -89,7 +89,7 @@ struct MenuSofaPicker: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Sessel")
+            Text(L("Chair"))
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(.secondary)
                 .padding(.leading, 16)

@@ -33,7 +33,7 @@ struct FanView: View {
 
                 if model.items.count > 1 {
                     Button(action: onPutBackAll) {
-                        Label("Alles zurücklegen", systemImage: "arrow.uturn.backward")
+                        Label(L("Put everything back"), systemImage: "arrow.uturn.backward")
                             .font(.system(size: 13, weight: .semibold))
                             .padding(.horizontal, 14).padding(.vertical, 8)
                             .background(.regularMaterial, in: Capsule())
@@ -66,7 +66,7 @@ struct FanView: View {
                         .opacity(showLabel ? 1 : 0)
                         .allowsHitTesting(false)
                     Button { onPutBack(item) } label: {
-                        Label("Zurücklegen", systemImage: "arrow.uturn.backward")
+                        Label(L("Put back"), systemImage: "arrow.uturn.backward")
                             .font(.system(size: 11, weight: .semibold))
                             .padding(.horizontal, 10).padding(.vertical, 4)
                             .background(.regularMaterial, in: Capsule())

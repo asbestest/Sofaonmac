@@ -15,10 +15,10 @@ struct SettingsView: View {
                 .padding(.bottom, 12)
             separator
 
-            SectionLabel("Sessel")
+            SectionLabel(L("Chair"))
             SofaPicker(model: model)
                 .padding(.bottom, 2)
-            Row("Größe") {
+            Row(L("Size")) {
                 Picker("", selection: $model.size) {
                     ForEach(SofaSize.allCases) { Text($0.title).tag($0) }
                 }
@@ -26,29 +26,29 @@ struct SettingsView: View {
                 .labelsHidden()
                 .frame(width: 104)
             }
-            Row("Position", caption: "Sessel mit der Maus verschieben") {
-                Button("In die Ecke", action: onResetPosition).controlSize(.small)
+            Row(L("Position"), caption: L("Drag the chair with the mouse")) {
+                Button(L("To the corner"), action: onResetPosition).controlSize(.small)
             }
             separator
 
-            SectionLabel("Optionen")
-            Row("Immer im Vordergrund", caption: model.alwaysOnTop ? "Steht vor allen Fenstern" : "Kommt nach vorne, sobald du etwas ziehst") {
+            SectionLabel(L("Options"))
+            Row(L("Always in front"), caption: model.alwaysOnTop ? L("Stands in front of all windows") : L("Comes forward when you drag something")) {
                 Toggle("", isOn: $model.alwaysOnTop).toggleStyle(.switch).labelsHidden().controlSize(.mini)
             }
-            Row("Sofa-Ordner", caption: "Hier liegt alles, was auf dem Sofa ist") {
+            Row(L("Sofa folder"), caption: L("Everything on the sofa is here")) {
                 Button { model.showFolder() } label: {
-                    Label("Im Finder", systemImage: "arrow.up.right").labelStyle(.titleAndIcon)
+                    Label(L("In Finder"), systemImage: "arrow.up.right").labelStyle(.titleAndIcon)
                 }
                 .controlSize(.small)
             }
-            Row("Beim Login starten", caption: model.loginError ?? "Nach dem Neustart wieder da") {
+            Row(L("Start at login"), caption: model.loginError ?? L("Back after a restart")) {
                 Toggle("", isOn: Binding(get: { model.launchAtLogin }, set: { model.setLaunchAtLogin($0) }))
                     .toggleStyle(.switch).labelsHidden().controlSize(.mini)
             }
             separator
 
             HStack {
-                Button(action: onPutBackAll) { Label("Alles zurücklegen", systemImage: "arrow.uturn.backward") }
+                Button(action: onPutBackAll) { Label(L("Put everything back"), systemImage: "arrow.uturn.backward") }
                     .buttonStyle(.plain)
                     .disabled(model.items.isEmpty)
                 Spacer()
@@ -72,7 +72,7 @@ struct SettingsView: View {
                 .frame(width: 40, height: 40)
             VStack(alignment: .leading, spacing: 1) {
                 Text("Sofaonmac").font(.system(size: 15, weight: .semibold))
-                Text(model.visible ? "Steht da · \(model.countText)" : "Weggeräumt · \(model.countText)")
+                Text((model.visible ? L("Standing") : L("Put away")) + " · " + model.countText)
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -87,7 +87,7 @@ struct SettingsView: View {
     }
 }
 
-/// Small grey heading, like the "Sessel" label in the menu.
+/// Small grey heading, like the "Chair" label in the menu.
 private struct SectionLabel: View {
     let text: String
     init(_ text: String) { self.text = text }

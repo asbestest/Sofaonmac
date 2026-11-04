@@ -71,17 +71,17 @@ final class SofaModel: ObservableObject {
             if on { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
             loginError = nil
         } catch {
-            loginError = "Geht nur, wenn die App im Programme-Ordner liegt."
+            loginError = L("Only works when the app is in the Applications folder.")
         }
         launchAtLogin = SMAppService.mainApp.status == .enabled
     }
 
-    /// "3 Sachen drauf"
+    /// "3 things on it"
     var countText: String {
         switch items.count {
-        case 0: "leer"
-        case 1: "1 Sache drauf"
-        case let n: "\(n) Sachen drauf"
+        case 0: L("empty")
+        case 1: L("1 thing on it")
+        case let n: String(format: L("%d things on it"), n)
         }
     }
 

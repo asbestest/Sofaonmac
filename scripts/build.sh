@@ -12,6 +12,7 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$(swift build -c release --show-bin-path)/Sofaonmac" "$APP/Contents/MacOS/Sofaonmac"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
+cp -R Resources/*.lproj "$APP/Contents/Resources/"
 cp Resources/AppIcon.icns Resources/sofa-*.png "$APP/Contents/Resources/"
 codesign --force --sign - "$APP" >/dev/null
 echo "Built $APP"

@@ -1,0 +1,60 @@
+/* German. The English text in the code is the key. */
+
+/* Menu */
+"Set up chair" = "Sessel aufstellen";
+"Put chair away" = "Sessel wegräumen";
+"Rummage" = "Durchwühlen";
+"Put everything back" = "Alles zurücklegen";
+"Size" = "Größe";
+"About Sofaonmac" = "Über Sofaonmac";
+"Settings …" = "Einstellungen …";
+"Quit Sofaonmac" = "Sofaonmac beenden";
+"Close Window" = "Fenster schließen";
+
+/* Settings */
+"Chair" = "Sessel";
+"Position" = "Position";
+"Drag the chair with the mouse" = "Sessel mit der Maus verschieben";
+"To the corner" = "In die Ecke";
+"Options" = "Optionen";
+"Always in front" = "Immer im Vordergrund";
+"Stands in front of all windows" = "Steht vor allen Fenstern";
+"Comes forward when you drag something" = "Kommt nach vorne, sobald du etwas ziehst";
+"Sofa folder" = "Sofa-Ordner";
+"Everything on the sofa is here" = "Hier liegt alles, was auf dem Sofa ist";
+"In Finder" = "Im Finder";
+"Start at login" = "Beim Login starten";
+"Back after a restart" = "Nach dem Neustart wieder da";
+"Only works when the app is in the Applications folder." = "Geht nur, wenn die App im Programme-Ordner liegt.";
+"Standing" = "Steht da";
+"Put away" = "Weggeräumt";
+"empty" = "leer";
+"1 thing on it" = "1 Sache drauf";
+"%d things on it" = "%d Sachen drauf";
+
+/* The pile */
+"Put back" = "Zurücklegen";
+"Picture" = "Bild";
+"Note" = "Notiz";
+"at" = "um";
+
+/* Chairs */
+"Corduroy" = "Cord";
+"Green corduroy armchair" = "Grüner Cord-Sessel";
+"The squishy classic in brown leather" = "Der Knautsch-Klassiker in braunem Leder";
+"Le Corbusier's cube in black leather" = "Le Corbusiers Würfel in schwarzem Leder";
+"Sand sofa" = "Sandsofa";
+"Soft modular sofa in beige" = "Weiches Modulsofa in Beige";
+"Cantilever" = "Freischwinger";
+"Chrome tube with Viennese cane" = "Chromrohr mit Wiener Geflecht";
+"Spindle chair" = "Sprossenstuhl";
+"Light beech chair with a spindle back" = "Heller Buchenstuhl mit Sprossenlehne";
+"Gaming chair" = "Gaming-Stuhl";
+"Black and white office chair on wheels" = "Schwarz-weißer Bürostuhl auf Rollen";
+"Bentwood" = "Bugholzsessel";
+"Lounge chair in cream bouclé" = "Loungesessel mit cremefarbenem Bouclé";
+"Bean bag" = "Sitzsack";
+"Dark blue corduroy to sink into" = "Dunkelblauer Cord zum Reinfläzen";
+"Small" = "Klein";
+"Medium" = "Mittel";
+"Large" = "Groß";

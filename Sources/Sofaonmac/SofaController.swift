@@ -281,7 +281,7 @@ final class SofaHostView: NSHostingView<SofaView> {
         let stamp = Self.stamp()
         if let img = NSImage(pasteboard: pb), let tiff = img.tiffRepresentation,
            let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:]) {
-            return model.add(data: png, named: "Bild \(stamp).png")
+            return model.add(data: png, named: L("Picture") + " \(stamp).png")
         }
         if let link = pb.string(forType: .URL) ?? pb.string(forType: .string).flatMap({ s in
             URL(string: s).flatMap { $0.scheme?.hasPrefix("http") == true ? s : nil } }),
@@ -293,14 +293,14 @@ final class SofaHostView: NSHostingView<SofaView> {
             }
         }
         if let text = pb.string(forType: .string), let data = text.data(using: .utf8) {
-            return model.add(data: data, named: "Notiz \(stamp).txt")
+            return model.add(data: data, named: L("Note") + " \(stamp).txt")
         }
         return false
     }
 
     private static func stamp() -> String {
         let f = DateFormatter()
-        f.dateFormat = "yyyy-MM-dd 'um' HH.mm.ss"
+        f.dateFormat = "yyyy-MM-dd '" + L("at") + "' HH.mm.ss"
         return f.string(from: Date())
     }
 }
