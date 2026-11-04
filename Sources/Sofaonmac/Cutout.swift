@@ -59,11 +59,23 @@ enum Cutout {
                 let distance = (0..<(w * h)).map { i in
                     max(255 - Float(src[i * 4]), 255 - Float(src[i * 4 + 1]), 255 - Float(src[i * 4 + 2])) / 255
                 }
-                let background = flood(from: distance, below: 0.12, w, h)
+                var background = flood(from: distance, below: 0.12, w, h)
+                // white gaps the furniture closes all around (between spindles, under a seat) aren't reached from
+                // the border; such a patch is background too when Vision mostly says so, unlike a highlight
+                for patch in enclosedPatches(distance, below: 0.12, outside: background, w, h) {
+                    let inside = patch.reduce(0) { $0 + Int(mask[$1]) }
+                    if inside < patch.count * 128 { for i in patch { background[i] = true } }
+                }
+                // but white upholstery touching the outline is connected too: where Vision is sure, a few
+                // pixels in from its mask's edge, it's furniture and stays, however white it is
+                var sure = (0..<(w * h)).map { Float(mask[$0]) / 255 }
+                for _ in 0..<(max(w, h) / 300) { sure = minFilter(sure, w, h) }
                 for i in 0..<(w * h) {
-                    let key: Float = background[i] ? smoothstep(0.03, 0.12, distance[i]) : 1
+                    let key: Float = background[i] && sure[i] < 0.9 ? smoothstep(0.03, 0.12, distance[i]) : 1
                     alpha[i] = key * smoothstep(0.2, 0.5, Float(mask[i]) / 255)
                 }
+                // light gray rim pixels survive the key; pull the edge in by a pixel and soften it
+                alpha = boxBlur(minFilter(alpha, w, h), w, h)
             case .photo:
                 for i in 0..<(w * h) { alpha[i] = smoothstep(0.35, 0.65, Float(mask[i]) / 255) }
                 // pull the edge in by a pixel, then soften it by one
@@ -151,6 +163,28 @@ enum Cutout {
             if y < h - 1 { stack.append(i + w) }
         }
         return seen
+    }
+
+    /// The connected patches of pixels below `limit` that `outside` doesn't already hold, as pixel indices.
+    private static func enclosedPatches(_ value: [Float], below limit: Float, outside: [Bool], _ w: Int, _ h: Int) -> [[Int]] {
+        var seen = outside
+        var patches: [[Int]] = []
+        for start in 0..<(w * h) where !seen[start] && value[start] < limit {
+            var patch: [Int] = []
+            var stack = [start]
+            seen[start] = true
+            while let i = stack.popLast() {
+                patch.append(i)
+                let x = i % w, y = i / w
+                for n in [x > 0 ? i - 1 : -1, x < w - 1 ? i + 1 : -1, y > 0 ? i - w : -1, y < h - 1 ? i + w : -1]
+                where n >= 0 && !seen[n] && value[n] < limit {
+                    seen[n] = true
+                    stack.append(n)
+                }
+            }
+            patches.append(patch)
+        }
+        return patches
     }
 
     private static func minFilter(_ a: [Float], _ w: Int, _ h: Int) -> [Float] {

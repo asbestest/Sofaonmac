@@ -18,6 +18,11 @@ struct SofaStyle: Identifiable, Equatable, Hashable {
         SofaStyle(id: "togo", title: "Togo", subtitle: "Der Knautsch-Klassiker in braunem Leder", seat: CGPoint(x: 0.64, y: 0.55), spread: 0.14, width: 105),
         SofaStyle(id: "lc2", title: "LC2", subtitle: "Le Corbusiers Würfel in schwarzem Leder", seat: CGPoint(x: 0.30, y: 0.36), spread: 0.08, width: 90),
         SofaStyle(id: "sand", title: "Sandsofa", subtitle: "Weiches Modulsofa in Beige", seat: CGPoint(x: 0.38, y: 0.45), spread: 0.18, width: 220),
+        SofaStyle(id: "freischwinger", title: "Freischwinger", subtitle: "Chromrohr mit Wiener Geflecht", seat: CGPoint(x: 0.43, y: 0.42), spread: 0.12, width: 60),
+        SofaStyle(id: "sprossen", title: "Sprossenstuhl", subtitle: "Heller Buchenstuhl mit Sprossenlehne", seat: CGPoint(x: 0.47, y: 0.40), spread: 0.13, width: 54),
+        SofaStyle(id: "gaming", title: "Gaming-Stuhl", subtitle: "Schwarz-weißer Bürostuhl auf Rollen", seat: CGPoint(x: 0.45, y: 0.55), spread: 0.14, width: 74),
+        SofaStyle(id: "bugholz", title: "Bugholzsessel", subtitle: "Loungesessel mit cremefarbenem Bouclé", seat: CGPoint(x: 0.40, y: 0.45), spread: 0.16, width: 91),
+        SofaStyle(id: "sitzsack", title: "Sitzsack", subtitle: "Dunkelblauer Cord zum Reinfläzen", seat: CGPoint(x: 0.50, y: 0.52), spread: 0.2, width: 125),
     ]
 
     static let standard = all[0]
