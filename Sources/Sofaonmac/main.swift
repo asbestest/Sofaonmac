@@ -14,6 +14,7 @@ if let i = args.firstIndex(of: "--cutout"), args.count > i + 2 {
     exit(Cutout.run(input: args[i + 1], output: args[i + 2], lift: lift) ? 0 : 1)
 }
 
+EarlierSettings.takeOver()
 let app = NSApplication.shared
 let delegate = AppDelegate()
 app.delegate = delegate
